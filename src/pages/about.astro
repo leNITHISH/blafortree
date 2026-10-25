@@ -4,51 +4,40 @@ import { links } from '../links';
 ---
 
 <Layout title="about | Nithish Siva Kumar" active="about">
+  <h1 class="titleline">Nithish Siva Kumar <span class="handle">leNITHISH</span></h1>
   <table class="profile">
     <tbody>
       <tr>
-        <td>user:</td>
-        <td>leNITHISH</td>
-      </tr>
-      <tr>
-        <td>name:</td>
-        <td>Nithish Siva Kumar</td>
-      </tr>
-      <tr>
-        <td>about:</td>
+        <th scope="row">about</th>
         <td>
           Software engineer. I like low-level systems, low-power devices, CLI tools and core CS fundamentals. I run
           Arch and write code in Neovim.
         </td>
       </tr>
       <tr>
-        <td>languages:</td>
+        <th scope="row">languages</th>
         <td>C, C++, Go, Java, Python, JavaScript</td>
       </tr>
       <tr>
-        <td>hardware:</td>
+        <th scope="row">hardware</th>
         <td>ESP32, 8051 (AT89S52), I2C sensors</td>
       </tr>
       <tr>
-        <td>tools:</td>
+        <th scope="row">tools</th>
         <td>Arch Linux, Neovim, Git, DuckDB</td>
       </tr>
       <tr>
-        <td>core cs:</td>
+        <th scope="row">core cs</th>
         <td>operating systems, computer networks, data structures and algorithms</td>
       </tr>
       <tr>
-        <td>also:</td>
-        <td>
-          Building Management System for Greenergy, an industry project. I designed the system architecture and the
-          low-level resource-monitoring logic for smart-building energy efficiency, and modeled the IoT sensor data
-          pipelines. The code isn't public.
-        </td>
+        <th scope="row">also</th>
+        <td>Battery Management System (BMS) for Greenergy, an industry project. The code isn't public.</td>
       </tr>
       <tr>
-        <td></td>
-        <td class="subtext">
-          <a href="/">projects</a> | <a href={links.github}>github</a> | <a href={links.linkedin}>linkedin</a> | <a href={links.leetcode}>leetcode</a> | <a href={links.email}>email</a>
+        <th scope="row">links</th>
+        <td>
+          <a href="/">projects</a> · <a href={links.github}>github</a> · <a href={links.linkedin}>linkedin</a> · <a href={links.leetcode}>leetcode</a> · <a href={links.email}>email</a>
         </td>
       </tr>
     </tbody>
@@ -56,23 +45,41 @@ import { links } from '../links';
 </Layout>
 
 <style>
+  .handle {
+    margin-left: 8px;
+    color: var(--gray);
+    font-size: 17px;
+    font-weight: 460;
+  }
+
   .profile {
-    margin-left: 10px;
+    margin-top: 24px;
     border-collapse: collapse;
   }
 
+  th,
   td {
-    padding: 2px 6px 2px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
     vertical-align: top;
   }
 
-  td + td {
-    max-width: 640px;
-    color: #000;
+  th {
+    padding-right: 24px;
+    color: var(--gray);
+    font-weight: 460;
+    white-space: nowrap;
   }
 
-  td.subtext {
-    padding-top: 10px;
-    color: var(--gray);
+  td {
+    max-width: 62ch;
+  }
+
+  td a {
+    text-decoration: underline;
+    text-decoration-color: var(--orange);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
   }
 </style>
