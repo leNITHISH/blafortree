@@ -1,43 +1,28 @@
-# Astro Starter Kit: Minimal
+# blafortree
+
+Source for [blafortree.netlify.app](https://blafortree.netlify.app), my portfolio. Built with Astro and styled after
+Hacker News. It ships no client-side JavaScript.
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev      # http://localhost:4321
+npm run build    # static site in dist/
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Adding a project
 
-## 🚀 Project Structure
+Each project is a Markdown file in `src/content/projects/`. The file name becomes the URL (`/projects/<name>/`) and the
+body is the write-up. Frontmatter:
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```yaml
+---
+title: meeseeks
+tagline: a crash-safe log-structured key-value store in C
+stack: [C11, POSIX, pthreads]
+year: 2026
+repo: https://github.com/leNITHISH/meeseeks
+rank: 1          # position on the home page
+---
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+The schema is in `src/content.config.ts`, and the links in the header, footer and about page come from `src/links.ts`.

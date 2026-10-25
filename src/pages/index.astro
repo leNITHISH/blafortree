@@ -1,122 +1,17 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import ProjectRow from '../components/ProjectRow.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.rank - b.data.rank);
 ---
 
-<Layout title="Nithish Siva Kumar | Systems & Software Engineer">
-  <main>
-    <!-- Header / Intro -->
-    <header class="hero">
-      <p class="prompt"><code>nithish@archlinux:~$ whoami</code></p>
-      <h1>Nithish Siva Kumar</h1>
-      <p class="subtitle">Software Engineer & Systems Developer</p>
-      <p class="bio">
-        Passionate about low-level systems, low-power devices, CLI tools, and core CS fundamentals. 
-        Btw, I run Arch and write code in Neovim.
-      </p>
-
-      <nav class="links">
-        <a href="https://github.com/leNITHISH" target="_blank">[GitHub]</a>
-        <a href="https://leetcode.com/u/leNITHISH/" target="_blank">[LeetCode]</a>
-        <a href="https://in.linkedin.com/in/nithish-siva-kumar-48217a290" target="_blank">[LinkedIn]</a>
-        <a href="mailto:the.nithish.siva.kumar@gmail.com">[Email]</a>
-      </nav>
-    </header>
-
-    <hr class="divider" />
-
-    <!-- Technical Stack -->
-    <section>
-      <h2><code>$ cat skills.txt</code></h2>
-      <ul class="skills-grid">
-        <li><strong>Languages:</strong> C, Java, Python, JavaScript</li>
-        <li><strong>Environment:</strong> Arch Linux, Neovim, Git, Linux CLI</li>
-        <li><strong>Core CS:</strong> OS, Computer Networks, Data Structures & Algorithms</li>
-      </ul>
-    </section>
-
-    <!-- Projects -->
-    <section class="projects">
-      <h2><code>$ ls ./projects/</code></h2>
-
-      <div class="card">
-        <h3>PAX-Counter (Crowd Estimator)</h3>
-        <p class="tag">Embedded / Systems • ESP32</p>
-        <p>
-          Infrastructure-free estimation tool using ESP32 to passively capture Wi-Fi probe requests and calculate spatial density without network client connection. Built with a lightweight JavaScript dashboard.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>Building Management System (BMS)</h3>
-        <p class="tag">Greenergy Project • Architecture</p>
-        <p>
-          Designed system architecture and low-level resource monitoring logic for smart building energy efficiency. Modeled IoT sensor data pipelines for optimal consumption.
-        </p>
-      </div>
-    </section>
-  </main>
+<Layout title="Nithish Siva Kumar" active="projects">
+  <p class="toptext">
+    Systems and embedded software: a storage engine, an Arch Linux tool, ESP32 and 8051 firmware, a data
+    pipeline. Each one has a write-up. More <a href="/about/">about me</a>.
+  </p>
+  <ol class="items">
+    {projects.map((project, i) => <li><ProjectRow project={project} rank={i + 1} /></li>)}
+  </ol>
 </Layout>
-
-<style>
-  .prompt {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin-bottom: 0.25rem;
-  }
-  h1 {
-    font-family: var(--font-mono);
-    font-size: 2.2rem;
-    color: var(--fg);
-  }
-  .subtitle {
-    font-weight: 600;
-    color: var(--accent);
-    margin-bottom: 0.75rem;
-  }
-  .bio {
-    color: var(--muted);
-    margin-bottom: 1.25rem;
-  }
-  .links {
-    display: flex;
-    gap: 1rem;
-    font-family: var(--font-mono);
-    font-size: 0.95rem;
-  }
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 2rem 0;
-  }
-  h2 {
-    font-family: var(--font-mono);
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: var(--accent);
-  }
-  .skills-grid {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .projects {
-    margin-top: 2rem;
-  }
-  .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-  }
-  .card h3 {
-    font-family: var(--font-mono);
-    font-size: 1.1rem;
-  }
-  .tag {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-bottom: 0.5rem;
-  }
-</style>

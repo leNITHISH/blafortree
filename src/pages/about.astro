@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { links } from '../links';
+---
+
+<Layout title="about | Nithish Siva Kumar" active="about">
+  <table class="profile">
+    <tbody>
+      <tr>
+        <td>user:</td>
+        <td>leNITHISH</td>
+      </tr>
+      <tr>
+        <td>name:</td>
+        <td>Nithish Siva Kumar</td>
+      </tr>
+      <tr>
+        <td>about:</td>
+        <td>
+          Software engineer. I like low-level systems, low-power devices, CLI tools and core CS fundamentals. I run
+          Arch and write code in Neovim.
+        </td>
+      </tr>
+      <tr>
+        <td>languages:</td>
+        <td>C, C++, Go, Java, Python, JavaScript</td>
+      </tr>
+      <tr>
+        <td>hardware:</td>
+        <td>ESP32, 8051 (AT89S52), I2C sensors</td>
+      </tr>
+      <tr>
+        <td>tools:</td>
+        <td>Arch Linux, Neovim, Git, DuckDB</td>
+      </tr>
+      <tr>
+        <td>core cs:</td>
+        <td>operating systems, computer networks, data structures and algorithms</td>
+      </tr>
+      <tr>
+        <td>also:</td>
+        <td>
+          Building Management System for Greenergy, an industry project. I designed the system architecture and the
+          low-level resource-monitoring logic for smart-building energy efficiency, and modeled the IoT sensor data
+          pipelines. The code isn't public.
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="subtext">
+          <a href="/">projects</a> | <a href={links.github}>github</a> | <a href={links.linkedin}>linkedin</a> | <a href={links.leetcode}>leetcode</a> | <a href={links.email}>email</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</Layout>
+
+<style>
+  .profile {
+    margin-left: 10px;
+    border-collapse: collapse;
+  }
+
+  td {
+    padding: 2px 6px 2px 0;
+    vertical-align: top;
+  }
+
+  td + td {
+    max-width: 640px;
+    color: #000;
+  }
+
+  td.subtext {
+    padding-top: 10px;
+    color: var(--gray);
+  }
+</style>

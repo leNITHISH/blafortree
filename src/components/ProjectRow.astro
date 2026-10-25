@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  // Index rows are numbered and link to the write-up. The item page has no
+  // rank and its title links out to the source, like an HN story.
+  rank?: number;
+}
+
+const { project, rank } = Astro.props;
+const { title, tagline, stack, year, repo } = project.data;
+const writeup = `/projects/${project.id}/`;
+const repoUrl = new URL(repo);
+const sitestr = `${repoUrl.hostname}/${repoUrl.pathname.split('/')[1]}`;
+---
+
+<div class="row">
+  {rank !== undefined && <span class="rank">{rank}.</span>}
+  <span class="votearrow" aria-hidden="true"></span>
+  <div>
+    <span class="titleline"><a href={rank !== undefined ? writeup : repo}>{title}: {tagline}</a> <span class="sitestr">({sitestr})</span></span>
+    <div class="subtext">{stack.join(', ')} | {year} | {rank !== undefined && <><a href={writeup}>write-up</a> | </>}<a href={repo}>source</a></div>
+  </div>
+</div>
