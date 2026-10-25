@@ -5,6 +5,7 @@ stack: [Go, TUI, Arch Linux]
 year: 2026
 repo: https://github.com/leNITHISH/cronen
 rank: 2
+accent: '#9f7f08'
 ---
 
 A terminal UI for Arch Linux. Before you run `pacman -Syu`, it shows the pending repo and AUR updates, the Arch news you haven't read, anything that needs manual intervention, and risky packages (kernel, GPU drivers, glibc, systemd), with links to upstream and the packaging changelog. When you're happy, `U` hands the terminal to `sudo pacman -Syu` or your AUR helper.

@@ -11,6 +11,8 @@ const projects = defineCollection({
     year: z.number(),
     repo: z.url(),
     rank: z.number(),
+    // Fill color for this project's tag, strip and hover box. See README.
+    accent: z.string().regex(/^#[0-9a-f]{6}$/i),
   }),
 });
 

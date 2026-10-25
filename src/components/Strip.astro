@@ -1,0 +1,19 @@
+---
+import { cssColor, defaultRecipe, recipes } from '../strips';
+
+interface Props {
+  // Project id; picks its recipe. Colors come from --accent on an ancestor.
+  id: string;
+}
+
+const blocks = recipes[Astro.props.id] ?? defaultRecipe;
+---
+
+<span class="strip" aria-hidden="true">
+  {
+    blocks.map(([w, h, c]) => {
+      const color = cssColor(c);
+      return <i style={color ? `--w:${w}px;--h:${h}px;--c:${color}` : `--w:${w}px`} />;
+    })
+  }
+</span>

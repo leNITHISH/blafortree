@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Barcode from './Barcode.astro';
+import Strip from './Strip.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  // 1-based position on the index and the number of projects.
+  index: number;
+  total: number;
+}
+
+const { project, index, total } = Astro.props;
+const { title, tagline, stack, year, repo, accent } = project.data;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<header class="label" style={`--accent: ${accent}`}>
+  <div class="caption caption-line"><span>Project {pad(index)} / {pad(total)}</span><span>{year}</span></div>
+  <h1 class="label-title"><a href={repo}>{title}</a></h1>
+  <div class="label-rule"></div>
+  <div class="label-grid">
+    <div><div class="caption">Description of contents</div><p class="label-desc">{tagline}</p></div>
+    <div>
+      <div class="caption">Stack</div>
+      <ul class="label-stack">{stack.map((s) => <li>{s}</li>)}</ul>
+    </div>
+    <div class="label-code"><Barcode name={title} year={year} /></div>
+  </div>
+  <div class="label-foot"><Strip id={project.id} /><a class="caption" href={repo}>Source &gt;</a></div>
+</header>

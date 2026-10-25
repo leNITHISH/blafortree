@@ -2,23 +2,28 @@
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import ProjectRow from '../../components/ProjectRow.astro';
+import ProjectLabel from '../../components/ProjectLabel.astro';
 
 export async function getStaticPaths() {
-  const projects = await getCollection('projects');
-  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+  const projects = (await getCollection('projects')).sort((a, b) => a.data.rank - b.data.rank);
+  return projects.map((project, i) => ({
+    params: { id: project.id },
+    props: { project, index: i + 1, total: projects.length },
+  }));
 }
 
 interface Props {
   project: CollectionEntry<'projects'>;
+  index: number;
+  total: number;
 }
 
-const { project } = Astro.props;
+const { project, index, total } = Astro.props;
 const { Content } = await render(project);
 ---
 
 <Layout title={`${project.data.title}: ${project.data.tagline}`} description={project.data.tagline}>
-  <ProjectRow project={project} />
+  <ProjectLabel project={project} index={index} total={total} />
   <article class="post">
     <Content />
   </article>

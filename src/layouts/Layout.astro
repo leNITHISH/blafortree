@@ -1,8 +1,10 @@
 ---
-import '@fontsource-variable/ibm-plex-sans';
-import '@fontsource/ibm-plex-mono/400.css';
-import plexLatin from '@fontsource-variable/ibm-plex-sans/files/ibm-plex-sans-latin-wght-normal.woff2?url';
+import '@fontsource-variable/atkinson-hyperlegible-next';
+import '@fontsource-variable/atkinson-hyperlegible-mono';
+import atkinsonLatin from '@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2?url';
+import { getCollection } from 'astro:content';
 import { links } from '../links';
+import { cssColor, footer } from '../strips';
 
 interface Props {
   title: string;
@@ -17,6 +19,16 @@ const {
 } = Astro.props;
 // No canonical on the 404 page; it's served at whatever URL was missing.
 const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(Astro.url.pathname, Astro.site);
+
+// Footer strip: numbers in the layout are index positions, colored by that project's accent.
+const accents = (await getCollection('projects')).sort((a, b) => a.data.rank - b.data.rank).map((p) => p.data.accent);
+const footerBlocks = footer.flatMap((b) => {
+  if (b[0] === 'fill') return [`--g:${b[1]}`];
+  const [w, h, c] = b;
+  if (typeof c === 'number') return accents[c] ? [`--w:${w}px;--h:${h}px;--c:${accents[c]}`] : [];
+  const color = cssColor(c);
+  return [color ? `--w:${w}px;--h:${h}px;--c:${color}` : `--w:${w}px`];
+});
 ---
 
 <!doctype html>
@@ -28,18 +40,33 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
     <meta name="description" content={description} />
     {canonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preload" href={plexLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={atkinsonLatin} as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <header class="bar">
-      <div class="wrap bar-inner">
-        <a class="logo" href="/" aria-label="Home">N</a>
-        <a class="sitename" href="/">Nithish Siva Kumar</a>
-        <nav>
-          <a href="/" aria-current={active === 'projects' ? 'page' : undefined}>projects</a>
-          <a href="/about/" aria-current={active === 'about' ? 'page' : undefined}>about</a>
-        </nav>
-        <a class="right" href={links.github}>github</a>
+      <div class="wrap">
+        <div class="spec">
+          <div class="spec-n"><a class="logo" href="/" aria-label="Home">N</a></div>
+          <div class="spec-name">
+            <div class="caption">Name</div>
+            <div class="spec-v"><a href="/">Nithish Siva Kumar</a></div>
+          </div>
+          <div class="spec-contents">
+            <div class="caption">Contents</div>
+            <div class="spec-v">Systems + embedded</div>
+          </div>
+          <div class="spec-index">
+            <div class="caption">Index</div>
+            <nav class="spec-v">
+              <a href="/" aria-current={active === 'projects' ? 'page' : undefined}>projects</a>
+              <a href="/about/" aria-current={active === 'about' ? 'page' : undefined}>about</a>
+            </nav>
+          </div>
+          <div class="spec-else">
+            <div class="caption">Elsewhere</div>
+            <div class="spec-v"><a href={links.github}>github &gt;</a></div>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -48,6 +75,9 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
     </main>
 
     <footer class="wrap">
+      <div class="footer-strip" aria-hidden="true">
+        {footerBlocks.map((style) => (style.startsWith('--g') ? <i class="fill" style={style} /> : <i style={style} />))}
+      </div>
       <a href={links.github}>github</a> · <a href={links.linkedin}>linkedin</a> · <a href={links.leetcode}>leetcode</a> · <a href={links.email}>email</a> · <a href={links.source}>source</a>
     </footer>
   </body>
@@ -55,14 +85,54 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
 
 <style is:global>
   :root {
-    --cream: #f5efe0;
+    --cream: #f6eed2;
     --orange: #dd5a12;
-    --ink: #111;
+    --orange-deep: #b4470b;
+    --orange-tint: #f6c9a3;
+    --ink: #111111;
     --gray: #6b6558;
-    --rule: #e0d6c1;
-    --code-bg: #ebe3cf;
-    --sans: 'IBM Plex Sans Variable', system-ui, sans-serif;
-    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --rule: #e2d4ae;
+    --rule-strong: #b9ab84;
+    --code-bg: #ede3c4;
+    --on-orange: #ffffff;
+
+    --space-4: 4px;
+    --space-6: 6px;
+    --space-7: 7px;
+    --space-8: 8px;
+    --space-10: 10px;
+    --space-14: 14px;
+    --space-16: 16px;
+    --space-18: 18px;
+    --space-20: 20px;
+    --space-24: 24px;
+    --space-28: 28px;
+    --space-32: 32px;
+    --space-36: 36px;
+    --space-40: 40px;
+    --space-48: 48px;
+
+    --radius-none: 0;
+    --radius-code: 3px;
+    --radius-pre: 4px;
+
+    --stroke-hairline: 1px;
+    --stroke-bold: 2px;
+    --stroke-heavy: 4px;
+    --underline-offset: 3px;
+
+    --wrap-width: 860px;
+    --prose-measure: 68ch;
+    --profile-measure: 62ch;
+    --bar-height: 50px;
+    --rank-column: 30px;
+    --logo-size: 40px;
+    --tag-height: 22px;
+    --strip-height: 16px;
+    --barcode-height: 40px;
+
+    --font-sans: 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif;
+    --font-mono: 'Atkinson Hyperlegible Mono Variable', ui-monospace, monospace;
   }
 
   html {
@@ -73,7 +143,7 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
     margin: 0;
     background: var(--cream);
     color: var(--ink);
-    font-family: var(--sans);
+    font-family: var(--font-sans);
     font-size: 17px;
     font-weight: 460;
     line-height: 1.55;
@@ -84,87 +154,200 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
     text-decoration: none;
   }
 
+  ::selection {
+    background: var(--orange-tint);
+    color: var(--ink);
+  }
+
   .wrap {
-    max-width: 860px;
+    max-width: var(--wrap-width);
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 var(--space-20);
   }
 
-  /* Header bar */
+  /* Header: a spec strip of label cells, like the panel on a package.
+     Heavy ink rule on top (orange over the N cell), hairline under and between. */
   .bar {
-    background: var(--orange);
+    padding-top: var(--space-20);
   }
 
-  .bar-inner {
+  .spec {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+    grid-template-areas: 'n name contents index else';
+    border-top: var(--stroke-heavy) solid var(--ink);
+    border-bottom: var(--stroke-hairline) solid var(--ink);
+  }
+
+  .spec > div {
+    min-height: var(--bar-height);
+    padding: var(--space-8) var(--space-14) var(--space-10);
+    border-left: var(--stroke-hairline) solid var(--ink);
+  }
+
+  .spec-n {
+    position: relative;
+    grid-area: n;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    column-gap: 18px;
-    min-height: 50px;
+    padding-left: 0 !important;
+    border-left: 0 !important;
+  }
+
+  .spec-n::before {
+    position: absolute;
+    top: calc(var(--stroke-heavy) * -1);
+    right: 0;
+    left: 0;
+    height: var(--stroke-heavy);
+    background: var(--orange);
+    content: '';
+  }
+
+  .spec-name { grid-area: name; }
+  .spec-contents { grid-area: contents; }
+  .spec-index { grid-area: index; }
+
+  .spec-else {
+    grid-area: else;
+    padding-right: 0 !important;
   }
 
   .logo {
-    flex: none;
-    width: 24px;
-    height: 24px;
-    border: 2px solid #fff;
-    color: #fff;
+    display: block;
+    width: var(--logo-size);
+    height: var(--logo-size);
+    background: var(--orange);
+    color: var(--ink);
+    font-size: 24px;
     font-weight: 700;
-    line-height: 24px;
+    line-height: var(--logo-size);
     text-align: center;
   }
 
-  .sitename {
-    font-size: 18px;
-    font-weight: 700;
+  .spec-v {
+    margin-top: 2px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
   }
 
-  .bar nav {
-    display: flex;
-    gap: 16px;
+  .spec-v a + a {
+    margin-left: var(--space-14);
   }
 
-  .bar nav a,
-  .bar .right {
-    font-weight: 560;
-  }
-
-  .bar a:hover,
-  .bar nav a[aria-current='page'] {
+  .spec-v a:hover,
+  .spec-v a[aria-current='page'] {
     text-decoration: underline;
-    text-decoration-thickness: 2px;
+    text-decoration-color: var(--orange);
+    text-decoration-thickness: 3px;
     text-underline-offset: 5px;
   }
 
-  .bar .right {
-    margin-left: auto;
+  .spec-v a:hover:not([aria-current]) {
+    text-decoration-color: var(--rule-strong);
   }
 
   main.wrap {
-    padding-top: 32px;
-    padding-bottom: 48px;
+    padding-top: var(--space-32);
+    padding-bottom: var(--space-48);
   }
 
   /* Ranked rows, shared by the index and item pages */
   .lede {
-    margin: 0 0 28px;
-    padding-left: 40px;
+    margin: 0 0 var(--space-28);
+    padding-left: var(--space-40);
   }
 
   .items {
-    margin: 0;
+    margin: calc(var(--space-10) * -1) 0;
     padding: 0;
     list-style: none;
   }
 
-  .items li + li {
-    margin-top: 20px;
+  /* Rows touch, 20px apart through their padding, so the hover box never drops between them. */
+  .items > li {
+    padding: var(--space-10) 0;
+  }
+
+  /* The moving box: one box per list that glides to the hovered or focused row.
+     CSS anchor positioning, no script. Browsers without it get no box. */
+  @supports (anchor-name: --a) {
+    .items {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .items > li:is(:hover, :focus-within) {
+      anchor-name: --row;
+    }
+
+    /* The box is the hover signal; titles stay ink inside it, and the subtext
+       turns ink too (gray on the tint would be 4.3:1). */
+    .items .titleline a:hover {
+      color: inherit;
+    }
+
+    .items > li:is(:hover, :focus-within) .subtext,
+    .items > li:is(:hover, :focus-within) .subtext a {
+      color: var(--ink);
+    }
+
+    .items::before {
+      position: absolute;
+      z-index: -1;
+      position-anchor: --row;
+      top: anchor(top);
+      bottom: anchor(bottom);
+      left: calc(anchor(left) - var(--space-10));
+      right: calc(anchor(right) - var(--space-10));
+      background:
+        linear-gradient(var(--ink), var(--ink)) left top / 12px var(--stroke-bold),
+        linear-gradient(var(--ink), var(--ink)) left top / var(--stroke-bold) 12px,
+        linear-gradient(var(--ink), var(--ink)) right top / 12px var(--stroke-bold),
+        linear-gradient(var(--ink), var(--ink)) right top / var(--stroke-bold) 12px,
+        linear-gradient(var(--ink), var(--ink)) left bottom / 12px var(--stroke-bold),
+        linear-gradient(var(--ink), var(--ink)) left bottom / var(--stroke-bold) 12px,
+        linear-gradient(var(--ink), var(--ink)) right bottom / 12px var(--stroke-bold),
+        linear-gradient(var(--ink), var(--ink)) right bottom / var(--stroke-bold) 12px;
+      background-color: color-mix(in oklab, var(--box-accent, var(--orange)) 14%, var(--cream));
+      background-repeat: no-repeat;
+      content: '';
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        top 420ms cubic-bezier(0.22, 1.25, 0.36, 1),
+        bottom 420ms cubic-bezier(0.22, 1.25, 0.36, 1),
+        background-color 300ms ease,
+        opacity 0s;
+    }
+
+    .items:has(> li:is(:hover, :focus-within))::before {
+      opacity: 1;
+      transition:
+        top 420ms cubic-bezier(0.22, 1.25, 0.36, 1),
+        bottom 420ms cubic-bezier(0.22, 1.25, 0.36, 1),
+        background-color 300ms ease,
+        opacity 160ms ease;
+    }
+
+    .items:has(> li[data-project='meeseeks']:is(:hover, :focus-within)) { --box-accent: var(--accent-meeseeks); }
+    .items:has(> li[data-project='cronen']:is(:hover, :focus-within)) { --box-accent: var(--accent-cronen); }
+    .items:has(> li[data-project='paxcounter']:is(:hover, :focus-within)) { --box-accent: var(--accent-paxcounter); }
+    .items:has(> li[data-project='altimeter']:is(:hover, :focus-within)) { --box-accent: var(--accent-altimeter); }
+    .items:has(> li[data-project='haus-md']:is(:hover, :focus-within)) { --box-accent: var(--accent-haus-md); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .items::before {
+      transition-duration: 0s !important;
+    }
   }
 
   .row {
     display: grid;
-    grid-template-columns: 30px 1fr;
-    column-gap: 10px;
+    grid-template-columns: var(--rank-column) 1fr;
+    column-gap: var(--space-10);
   }
 
   .row.item {
@@ -172,7 +355,8 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
   }
 
   .rank {
-    color: var(--gray);
+    color: var(--orange-deep);
+    padding-top: 2px;
     font-size: 19px;
     font-variant-numeric: tabular-nums;
     line-height: 1.35;
@@ -195,11 +379,11 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
   }
 
   .titleline a:hover {
-    color: var(--orange);
+    color: var(--orange-deep);
   }
 
   .subtext {
-    margin-top: 4px;
+    margin-top: var(--space-4);
     color: var(--gray);
     font-size: 15px;
   }
@@ -216,8 +400,8 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
 
   /* Write-ups */
   .post {
-    max-width: 68ch;
-    margin-top: 28px;
+    max-width: var(--prose-measure);
+    margin-top: var(--space-28);
     line-height: 1.65;
   }
 
@@ -225,8 +409,8 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
   .post a {
     text-decoration: underline;
     text-decoration-color: var(--orange);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 3px;
+    text-decoration-thickness: var(--stroke-bold);
+    text-underline-offset: var(--underline-offset);
   }
 
   .post h2 {
@@ -260,22 +444,22 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
   }
 
   .post code {
-    font-family: var(--mono);
+    font-family: var(--font-mono);
     font-size: 0.86em;
   }
 
   /* Long inline paths and URLs would otherwise push narrow screens sideways. */
   .post :not(pre) > code {
     padding: 0.1em 0.2em;
-    border-radius: 3px;
+    border-radius: var(--radius-code);
     background: var(--code-bg);
     overflow-wrap: anywhere;
   }
 
   .post pre {
-    padding: 14px 16px;
+    padding: var(--space-14) var(--space-16);
     overflow-x: auto;
-    border-radius: 4px;
+    border-radius: var(--radius-pre);
     background: var(--code-bg);
     line-height: 1.5;
   }
@@ -295,22 +479,20 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
 
   .post th,
   .post td {
-    padding: 7px 20px 7px 0;
-    border-bottom: 1px solid var(--rule);
+    padding: var(--space-7) var(--space-20) var(--space-7) 0;
+    border-bottom: var(--stroke-hairline) solid var(--rule);
     text-align: left;
     vertical-align: top;
   }
 
   .post th {
-    border-bottom: 2px solid #b9ad93;
+    border-bottom: var(--stroke-bold) solid var(--orange);
     font-weight: 650;
   }
 
   /* Footer */
   footer.wrap {
-    padding-top: 18px;
-    padding-bottom: 36px;
-    border-top: 2px solid var(--orange);
+    padding-bottom: var(--space-36);
     color: var(--gray);
     font-size: 15px;
     text-align: center;
@@ -320,22 +502,238 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
     font-weight: 540;
   }
 
+  .footer-strip {
+    margin-bottom: var(--space-18);
+    border-bottom: var(--stroke-bold) solid var(--orange);
+  }
+
+  /* Micro graphics. Each project sets --accent on its row or label, e.g.
+     style="--accent: var(--accent-meeseeks)". Accents are fills only. */
+  .caption {
+    color: var(--gray);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  a.caption {
+    color: var(--ink);
+  }
+
+  a.caption:hover {
+    text-decoration: underline;
+    text-decoration-thickness: var(--stroke-hairline);
+    text-underline-offset: var(--underline-offset);
+  }
+
+  .caption-line {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-16);
+    margin-bottom: var(--space-20);
+    padding-bottom: var(--space-6);
+    border-bottom: var(--stroke-hairline) solid var(--ink);
+  }
+
+  .tag {
+    display: inline-block;
+    box-sizing: border-box;
+    min-width: var(--rank-column);
+    height: var(--tag-height);
+    padding: 0 var(--space-4);
+    background: var(--accent, var(--orange));
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: var(--tag-height);
+    text-align: center;
+    vertical-align: top;
+  }
+
+  .strip,
+  .footer-strip {
+    display: flex;
+    align-items: flex-end;
+    height: var(--strip-height);
+  }
+
+  .strip {
+    width: max-content;
+  }
+
+  /* Each block sets --w, --h and --c inline: <i style="--w:18px;--h:8px;--c:var(--accent)"> */
+  .strip > i,
+  .footer-strip > i {
+    flex: none;
+    width: var(--w, 8px);
+    height: var(--h, 8px);
+    background: var(--c, transparent);
+  }
+
+  .footer-strip > .fill {
+    flex: var(--g, 1) 1 0;
+    height: 0;
+  }
+
+  .barcode {
+    display: block;
+    height: var(--barcode-height);
+    width: auto;
+    fill: var(--ink);
+  }
+
+  /* ProjectLabel: the write-up header, set like a product label */
+  .label {
+    margin-bottom: 0;
+  }
+
+  .label .caption-line {
+    margin-bottom: var(--space-10);
+  }
+
+  .label-title {
+    margin: 0;
+    font-size: 64px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.92;
+  }
+
+  .label-title a:hover {
+    color: var(--orange-deep);
+  }
+
+  .label-rule {
+    height: var(--stroke-heavy);
+    margin-top: var(--space-14);
+    background: var(--ink);
+  }
+
+  .label-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) auto;
+    border-bottom: var(--stroke-hairline) solid var(--ink);
+  }
+
+  .label-grid > div {
+    padding: var(--space-10) var(--space-16) var(--space-14);
+  }
+
+  .label-grid > div:first-child {
+    padding-left: 0;
+  }
+
+  .label-grid > div:last-child {
+    padding-right: 0;
+  }
+
+  .label-grid > div + div {
+    border-left: var(--stroke-hairline) solid var(--ink);
+  }
+
+  .label-desc {
+    margin: var(--space-4) 0 0;
+    font-size: 19px;
+    font-weight: 480;
+    line-height: 1.35;
+  }
+
+  .label-stack {
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.5;
+    list-style: none;
+  }
+
+  .label-code .caption {
+    margin-top: var(--space-4);
+    color: var(--ink);
+  }
+
+  .label-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-16);
+    margin-top: var(--space-10);
+  }
+
+  /* About page (scoped styles in about.astro) */
+  .handle {
+    margin-left: var(--space-8);
+    color: var(--gray);
+    font-size: 17px;
+    font-weight: 460;
+  }
+
+  .profile {
+    margin-top: var(--space-24);
+    border-collapse: collapse;
+  }
+
+  .profile th,
+  .profile td {
+    padding: var(--space-8) 0;
+    border-bottom: var(--stroke-hairline) solid var(--rule);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .profile th {
+    padding-right: var(--space-24);
+    color: var(--gray);
+    font-weight: 460;
+    white-space: nowrap;
+  }
+
+  .profile td {
+    max-width: var(--profile-measure);
+  }
+
+  .profile td a {
+    text-decoration: underline;
+    text-decoration-color: var(--orange);
+    text-decoration-thickness: var(--stroke-bold);
+    text-underline-offset: var(--underline-offset);
+  }
+
   @media (max-width: 600px) {
     body {
       font-size: 16px;
     }
 
     .wrap {
-      padding: 0 16px;
+      padding: 0 var(--space-16);
     }
 
-    .bar-inner {
-      column-gap: 14px;
+    /* The strip folds into two rows; CONTENTS drops out. */
+    .spec {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas:
+        'n name name'
+        'index index else';
     }
 
-    /* github is in the footer too; this keeps the bar on one line. */
-    .bar .right {
+    .spec-contents {
       display: none;
+    }
+
+    .spec-index,
+    .spec-else {
+      border-top: var(--stroke-hairline) solid var(--ink);
+    }
+
+    .spec-index {
+      padding-left: 0 !important;
+      border-left: 0 !important;
     }
 
     .titleline,
@@ -345,6 +743,23 @@ const canonical = Astro.url.pathname.startsWith('/404') ? undefined : new URL(As
 
     h1.titleline {
       font-size: 22px;
+    }
+
+    .label-title {
+      font-size: 44px;
+    }
+
+    .label-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .label-grid > div {
+      padding: var(--space-10) 0 var(--space-14);
+    }
+
+    .label-grid > div + div {
+      border-top: var(--stroke-hairline) solid var(--ink);
+      border-left: 0;
     }
 
     .post {

@@ -5,6 +5,7 @@ stack: [ESP32-C3, C++, Java, DuckDB]
 year: 2025
 repo: https://github.com/leNITHISH/paxcounter
 rank: 3
+accent: '#ec4354'
 ---
 
 A Wi-Fi crowd-density counter. An ESP32 in promiscuous mode hops across channels 1 to 11 capturing probe requests, the frames phones broadcast while looking for networks. It hashes MAC addresses on the device and streams sightings over serial to a Java service, which links sightings across MAC randomization, removes duplicates, and logs CSV files that DuckDB queries turn into peak counts, visits, dwell time and occupancy over time.

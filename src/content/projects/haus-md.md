@@ -5,6 +5,7 @@ stack: [Python, DuckDB, Parquet]
 year: 2026
 repo: https://github.com/leNITHISH/haus-md
 rank: 5
+accent: '#0c9381'
 ---
 
 A data pipeline that pulls every *House, M.D.* episode, rating, director and writer out of IMDb's public dataset dump, builds a local DuckDB warehouse, validates it, runs a set of analyses and plots the result. I built it to learn DuckDB, pipeline structure and data-quality checks.

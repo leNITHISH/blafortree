@@ -4,14 +4,30 @@ import Layout from '../layouts/Layout.astro';
 import ProjectRow from '../components/ProjectRow.astro';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.rank - b.data.rank);
+const years = projects.map((p) => p.data.year);
+const span = `${Math.min(...years)}–${Math.max(...years)}`;
+
+// The moving box lives on the list, so it can't read a row's --accent; these
+// rules hand the hovered row's accent up to it.
+const boxAccents = projects
+  .map((p) => `.items:has(> li[data-project='${p.id}']:is(:hover, :focus-within)) { --box-accent: ${p.data.accent}; }`)
+  .join('\n');
 ---
 
 <Layout title="Nithish Siva Kumar" active="projects">
+  <style is:inline set:html={boxAccents}></style>
   <p class="lede">
     Systems and embedded software: a storage engine, an Arch Linux tool, ESP32 and 8051 firmware, a data
     pipeline. Each one has a write-up. More <a href="/about/">about me</a>.
   </p>
+  <div class="caption caption-line"><span>Index // {String(projects.length).padStart(2, '0')} projects</span><span>{span}</span></div>
   <ol class="items">
-    {projects.map((project, i) => <li><ProjectRow project={project} rank={i + 1} /></li>)}
+    {
+      projects.map((project, i) => (
+        <li data-project={project.id} style={`--accent: ${project.data.accent}`}>
+          <ProjectRow project={project} rank={i + 1} />
+        </li>
+      ))
+    }
   </ol>
 </Layout>
