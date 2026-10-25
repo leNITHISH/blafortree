@@ -5,6 +5,7 @@ stack: [C, SDCC, AT89S52, BMP280]
 year: 2026
 repo: https://github.com/leNITHISH/altimeter
 rank: 4
+accent: '#9866f0'
 ---
 
 An AT89S52 reads a BMP280 pressure sensor over bit-banged I2C, converts pressure to altitude, and shows altitude, temperature and pressure on a 16x2 character LCD. A push button zeroes the altitude at the current height, so you can lift the board 1 m and watch it read +1.0 m.

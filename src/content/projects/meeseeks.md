@@ -5,6 +5,7 @@ stack: [C11, POSIX, pthreads]
 year: 2026
 repo: https://github.com/leNITHISH/meeseeks
 rank: 1
+accent: '#2e81ee'
 ---
 
 A key-value store modeled on [Bitcask](https://riak.com/assets/bitcask-intro.pdf). Every write is appended to a log, an in-memory hash index points at the newest record of each key, and every get is exactly one disk read. It needs nothing beyond libc and pthreads.

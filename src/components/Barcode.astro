@@ -1,0 +1,32 @@
+---
+interface Props {
+  name: string;
+  year: number;
+}
+
+const { name, year } = Astro.props;
+
+// Decorative, not scannable: each character's code picks the widths of three
+// bar/gap pairs, between fixed guards. The same name always draws the same bars.
+const unit = 2;
+const height = 40;
+const seq: [number, number][] = [[1, 1], [1, 1]];
+for (const ch of name.toUpperCase()) {
+  const c = ch.charCodeAt(0);
+  for (let i = 0; i < 3; i++) seq.push([1 + ((c >> i) & 1) * 2, 1 + ((c >> (i + 3)) & 1)]);
+}
+seq.push([1, 1], [1, 0]);
+
+let x = 0;
+const bars = seq.map(([bar, gap]) => {
+  const rect = { x: x * unit, w: bar * unit };
+  x += bar + gap;
+  return rect;
+});
+const width = x * unit;
+---
+
+<svg class="barcode" viewBox={`0 0 ${width} ${height}`} width={width} height={height} role="img" aria-label={`barcode for ${name}`}>
+  {bars.map((b) => <rect x={b.x} width={b.w} height={height} />)}
+</svg>
+<div class="caption">{name.toUpperCase()} · {year}</div>
